@@ -1,3 +1,5 @@
+//Client2 (pipe)
+
 #include <windows.h>
 #include <iostream>
 #include <vector>
