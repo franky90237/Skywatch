@@ -39,11 +39,11 @@ int main()
     server.sin_addr.s_addr = inet_addr(ip);
     server.sin_port = htons(port);
 
-	//Connect to server
-	while(connect(client_socket, (struct sockaddr*)&server, sizeof(server)) < 0)
-	{
-
-	}
+    //Connect to server
+    while(connect(client_socket, (struct sockaddr*)&server, sizeof(server)) < 0)
+    {
+	    
+    }
 
     const int BUFSIZE=1024;
     char buffer[BUFSIZE];
