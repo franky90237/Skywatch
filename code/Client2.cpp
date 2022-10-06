@@ -1,5 +1,3 @@
-//Client2 (pipe)
-
 #include <windows.h>
 #include <iostream>
 #include <vector>
@@ -12,56 +10,56 @@ float calculate_median(char buffer[], int n);
 int main(void)
 {
     printf("Client2 is ready\n");
-
-	HANDLE pipe;
-	const char pipeName[]="\\\\.\\Pipe\\myNamedPipe";
+    
+    HANDLE pipe;
+    const char pipeName[]="\\\\.\\Pipe\\myNamedPipe";
 
     //wait for pipe
-	while(WaitNamedPipe(pipeName, NMPWAIT_WAIT_FOREVER) == 0)
-	{
-		
-	}
+    while(WaitNamedPipe(pipeName, NMPWAIT_WAIT_FOREVER) == 0)
+    {
+        
+    }
 
     //connect to pipe
-	if((pipe = CreateFile(pipeName, GENERIC_READ | GENERIC_WRITE,0 , (LPSECURITY_ATTRIBUTES)NULL,
+    if((pipe = CreateFile(pipeName, GENERIC_READ | GENERIC_WRITE,0 , (LPSECURITY_ATTRIBUTES)NULL,
                           OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, (HANDLE)NULL)) == INVALID_HANDLE_VALUE)
-	{
-		printf("CreateFile failed with error : %ld \n", GetLastError());
-		getchar();
-		return 1;
-	}
-	
+    {
+        printf("CreateFile failed with error : %ld \n", GetLastError());
+        getchar();
+        return 1;
+    }
+    
     const int BUFSIZE=1024;
     char buffer[BUFSIZE];
     DWORD bytesRead;
     //read from pipe
     if(ReadFile(pipe, buffer, sizeof(buffer), &bytesRead, NULL) <= 0)
-	{
-		printf("ReadFile failed with error : %ld \n",GetLastError());
-		CloseHandle(pipe);
-		getchar();
-		return 1;
-	}
-	buffer[bytesRead]='\0';
+    {
+        printf("ReadFile failed with error : %ld \n",GetLastError());
+        CloseHandle(pipe);
+        getchar();
+        return 1;
+    }
+    buffer[bytesRead]='\0';
 
 	//printf("buffer = %s, %ld characters\n", buffer, bytesRead);
 	float output=calculate_median(buffer, bytesRead);
-    printf("median : %f \n", output);
-    snprintf(buffer, sizeof(buffer), "%f", output);
-
-    DWORD bytesWrite;
+	printf("median : %f \n", output);
+	snprintf(buffer, sizeof(buffer), "%f", output);
+	
+	DWORD bytesWrite;
     //write to pipe
-	if(WriteFile(pipe, buffer, strlen(buffer), &bytesWrite, NULL) == 0)
-	{
-		printf("WriteFile failed with error : %ld \n",GetLastError());
-		CloseHandle(pipe);
-		getchar();
-		return 1;
-	}
-
-	CloseHandle(pipe);
-	getchar();
-	return 0;
+    if(WriteFile(pipe, buffer, strlen(buffer), &bytesWrite, NULL) == 0)
+    {
+        printf("WriteFile failed with error : %ld \n",GetLastError());
+        CloseHandle(pipe);
+        getchar();
+        return 1;
+    }
+    
+    CloseHandle(pipe);
+    getchar();
+    return 0;
 }
 
 float calculate_median(char buffer[], int n)
