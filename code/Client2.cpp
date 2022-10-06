@@ -30,7 +30,7 @@ int main(void)
 		getchar();
 		return 1;
 	}
-
+	
     const int BUFSIZE=1024;
     char buffer[BUFSIZE];
     DWORD bytesRead;
