@@ -123,53 +123,52 @@ string communicate_via_pipe(char input[])
     HANDLE pipe;
 
     //create pipe
-	if ((pipe = CreateNamedPipe("\\\\.\\Pipe\\myNamedPipe", PIPE_ACCESS_DUPLEX, PIPE_TYPE_MESSAGE,
+    if((pipe = CreateNamedPipe("\\\\.\\Pipe\\myNamedPipe", PIPE_ACCESS_DUPLEX, PIPE_TYPE_MESSAGE,
                                  1, 0, 0, NMPWAIT_USE_DEFAULT_WAIT, NULL)) == INVALID_HANDLE_VALUE)
-	{
-		printf("CreateNamedPipe failed with error : %ld \n",GetLastError());
-		return "";
-	}
+    {
+        printf("CreateNamedPipe failed with error : %ld \n",GetLastError());
+        return "";
+    }
 
     //connect to pipe
-	if (ConnectNamedPipe(pipe, NULL) == 0)
-	{
-		printf("ConnectNamePipe failed with error : %ld \n",GetLastError());
-		CloseHandle(pipe);
-		return "";
-	}
-
-
+    if (ConnectNamedPipe(pipe, NULL) == 0)
+    {
+        printf("ConnectNamePipe failed with error : %ld \n",GetLastError());
+        CloseHandle(pipe);
+        return "";
+    }
+    
     DWORD bytesWrite;
-	//write to pipe
-	if(WriteFile(pipe, input, strlen(input), &bytesWrite, NULL) == 0)
-	{
-		printf("WriteFile failed with error : %ld \n",GetLastError());
-		CloseHandle(pipe);
-		return "";
-	}
+    //write to pipe
+    if(WriteFile(pipe, input, strlen(input), &bytesWrite, NULL) == 0)
+    {
+        printf("WriteFile failed with error : %ld \n",GetLastError());
+        CloseHandle(pipe);
+        return "";
+    }
 
     const int BUFSIZE=1024;
     char buffer[BUFSIZE];
     DWORD bytesRead;
     //read form pipe
     if(ReadFile(pipe, buffer, sizeof(buffer), &bytesRead, NULL) <= 0)
-	{
-		printf("ReadFile failed with error : %ld \n",GetLastError());
-		CloseHandle(pipe);
-		return "";
-	}
-	buffer[bytesRead]='\0';
-	string output(buffer);
+    {
+        printf("ReadFile failed with error : %ld \n",GetLastError());
+        CloseHandle(pipe);
+        return "";
+    }
+    buffer[bytesRead]='\0';
+    string output(buffer);
 
-	if (DisconnectNamedPipe(pipe) == 0)
-	{
-		printf("DisconnectNamedPipe failed with error:  %ld \n",GetLastError());
-		return "";
-	}
+    if (DisconnectNamedPipe(pipe) == 0)
+    {
+        printf("DisconnectNamedPipe failed with error:  %ld \n",GetLastError());
+        return "";
+    }
 
-	CloseHandle(pipe);
+    CloseHandle(pipe);
 
-	return output;
+    return output;
 }
 
 string communicate_via_sharedMemery(char input[])
