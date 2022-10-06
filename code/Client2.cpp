@@ -19,7 +19,7 @@ int main(void)
     //wait for pipe
 	while(WaitNamedPipe(pipeName, NMPWAIT_WAIT_FOREVER) == 0)
 	{
-
+		
 	}
 
     //connect to pipe
